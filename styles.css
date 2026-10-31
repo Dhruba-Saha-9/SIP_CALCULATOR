@@ -191,3 +191,109 @@ footer.note{text-align:center;padding:18px 8px 4px;border-top:1px solid var(--li
   .card{transition:border-color .18s ease,transform .18s ease}
   .card:hover{border-color:color-mix(in srgb,var(--line) 55%,var(--blue))}
 }
+
+
+/* Black + blush-pink visual theme */
+:root{
+  color-scheme:dark;
+  --bg:#09070c;
+  --panel:#171019;
+  --panel2:#241522;
+  --text:#fff1f7;
+  --muted:#bda9b5;
+  --accent:#ff78b7;
+  --blue:#d9a0ff;
+  --line:#493044;
+  --red:#ff9bbd;
+  --surface:#100b12;
+  --shadow:0 14px 38px rgba(0,0,0,.34);
+}
+body{
+  background:
+    radial-gradient(ellipse at 50% -18%,rgba(124,43,88,.32),transparent 48%),
+    radial-gradient(ellipse at 100% 20%,rgba(73,34,70,.16),transparent 38%),
+    var(--bg);
+}
+.tabs{background:rgba(9,7,12,.9)}
+.tab{background:#1d1320;color:#c9b4c1;border-color:#493044}
+.tab.active{background:linear-gradient(135deg,#ff8fc4,#ed5da4);color:#210b18;border-color:#ff8fc4}
+.card{
+  background:linear-gradient(155deg,rgba(35,22,34,.98),rgba(19,13,22,.98));
+  border-color:#493044;
+  box-shadow:0 14px 38px rgba(0,0,0,.3),inset 0 1px 0 rgba(255,255,255,.025);
+}
+.result{
+  background:linear-gradient(135deg,#3c1932,#211326 72%,#19101e);
+  border-color:#88466d;
+}
+.eyebrow{color:#f3bfd8}
+.big{color:#ff8fc4}
+.metric{background:rgba(8,5,10,.42);border-color:rgba(255,143,196,.13)}
+input[type=range]{accent-color:#ff78b7}
+input[type=number],input[type=text],select{
+  background:#100b12;border-color:#493044;color:#fff1f7;
+}
+input:focus-visible,select:focus-visible,button:focus-visible{outline-color:#ff9acb}
+input[type=number]:focus,input[type=text]:focus,select:focus{
+  border-color:#ff78b7;
+  box-shadow:0 0 0 3px rgba(255,120,183,.17);
+}
+.btn{background:#281729;border-color:#55334c;color:#fff1f7}
+.btn.primary{
+  background:linear-gradient(135deg,#ff9acb,#f36eae);
+  color:#260d1b;border-color:#ff9acb;
+}
+.btn.danger{border-color:#87415c;color:#ffabc9}
+.pill{color:#ff9acb;border-color:#874568;background:rgba(255,120,183,.07)}
+.theme-toggle{background:#211522;border-color:#55334c;color:#fff1f7}
+.note{color:#bda9b5}
+th{color:#d9b9ca}
+td,th{border-bottom-color:#493044}
+.item{border-bottom-color:#493044}
+.empty{color:#bda9b5}
+.skip-link{background:#ff9acb;color:#260d1b}
+footer.note{border-top-color:#493044}
+html[data-theme="light"]{
+  color-scheme:light;
+  --bg:#fff5fa;
+  --panel:#fffafd;
+  --panel2:#f9eaf2;
+  --text:#321b2a;
+  --muted:#806779;
+  --accent:#d83f8e;
+  --blue:#9852b5;
+  --line:#efd2e1;
+  --red:#b4235d;
+  --surface:#fff7fb;
+  --shadow:0 9px 28px rgba(101,39,74,.08);
+}
+html[data-theme="light"] body{
+  background:
+    radial-gradient(ellipse at 50% -15%,#f8dce9 0,transparent 50%),
+    var(--bg);
+}
+html[data-theme="light"] .tabs{background:rgba(255,245,250,.92)}
+html[data-theme="light"] .tab{background:#fffafd;color:#806779;border-color:#efd2e1}
+html[data-theme="light"] .tab.active{background:#d83f8e;color:#fff;border-color:#d83f8e}
+html[data-theme="light"] .card{background:#fffafd;border-color:#efd2e1}
+html[data-theme="light"] h3{color:#512c43}
+html[data-theme="light"] input[type=number],
+html[data-theme="light"] input[type=text],
+html[data-theme="light"] select{background:#fff7fb;color:#321b2a;border-color:#efd2e1}
+html[data-theme="light"] .result{background:linear-gradient(135deg,#fbe4ef,#f6eafa);border-color:#edbfd5}
+html[data-theme="light"] .eyebrow{color:#874568}
+html[data-theme="light"] .big{color:#c52e7c}
+html[data-theme="light"] .metric{background:#fff;border-color:#efd2e1}
+html[data-theme="light"] .btn{background:#f9eaf2;color:#512c43;border-color:#efd2e1}
+html[data-theme="light"] .btn.primary{background:#d83f8e;color:#fff;border-color:#d83f8e}
+html[data-theme="light"] .btn.danger{color:#b4235d;border-color:#e7b8ca}
+html[data-theme="light"] .theme-toggle{background:#fffafd;color:#321b2a;border-color:#efd2e1}
+html[data-theme="light"] .pill{color:#c52e7c;border-color:#e9b6cf;background:#fff4f9}
+html[data-theme="light"] .line .label{color:#806779}
+html[data-theme="light"] .note{color:#806779}
+html[data-theme="light"] td,html[data-theme="light"] th{border-bottom-color:#efd2e1}
+html[data-theme="light"] .item{border-bottom-color:#efd2e1}
+@media(hover:hover){
+  .tab:hover:not(.active){border-color:#ff8fc4;color:var(--text)}
+  .card:hover{border-color:color-mix(in srgb,#ff78b7 42%,var(--line))}
+}

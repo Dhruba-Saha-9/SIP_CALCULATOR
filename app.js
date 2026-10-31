@@ -26,7 +26,7 @@ function drawLineChart(el,rows){
  const w=640,h=210,p=30,max=Math.max(1,...rows.map(r=>Math.max(r.value,r.invested)));
  const x=i=>p+(w-2*p)*(rows.length===1?1:i/(rows.length-1)),y=v=>h-p-(h-2*p)*v/max;
  const path=k=>rows.map((r,i)=>(i?'L':'M')+x(i).toFixed(1)+' '+y(r[k]).toFixed(1)).join(' ');
- $(el).innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Investment growth chart"><line x1="${p}" y1="${y(max/2)}" x2="${w-p}" y2="${y(max/2)}" stroke="#2a3b55" stroke-dasharray="4 5"/><path d="${path('value')}" fill="none" stroke="#70dfaa" stroke-width="4" stroke-linecap="round"/><path d="${path('invested')}" fill="none" stroke="#86b9ff" stroke-width="3" stroke-linecap="round"/><text x="${p}" y="${h-5}" fill="#aab8cd" font-size="11">Year 1</text><text x="${w-p}" y="${h-5}" text-anchor="end" fill="#aab8cd" font-size="11">Year ${rows.length}</text></svg>`;
+ $(el).innerHTML=`<svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Investment growth chart"><line x1="${p}" y1="${y(max/2)}" x2="${w-p}" y2="${y(max/2)}" stroke="#493044" stroke-dasharray="4 5"/><path d="${path('value')}" fill="none" stroke="#ff78b7" stroke-width="4" stroke-linecap="round"/><path d="${path('invested')}" fill="none" stroke="#d9a0ff" stroke-width="3" stroke-linecap="round"/><text x="${p}" y="${h-5}" fill="#aab8cd" font-size="11">Year 1</text><text x="${w-p}" y="${h-5}" text-anchor="end" fill="#aab8cd" font-size="11">Year ${rows.length}</text></svg>`;
 }
 let lastSipRows=[],lastSipResult=null;
 function updateSip(){
