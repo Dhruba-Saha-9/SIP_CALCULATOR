@@ -1,0 +1,18 @@
+{
+  "name": "Wealth Planner",
+  "short_name": "Wealth Planner",
+  "description": "Personal finance planning tools for investments, goals and retirement.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080f1b",
+  "theme_color": "#080f1b",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -3,17 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="description" content="Personal finance planner for SIPs, investment goals, portfolio tracking, FIRE and retirement projections.">
-<title>Wealth Planner | Personal Finance</title>
+<meta name="description" content="A clear India-focused personal finance planner for SIPs, goals, portfolio tracking, SWP, FIRE and retirement projections.">
+<meta name="theme-color" content="#080f1b">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" type="image/svg+xml" href="icon.svg">
+<link rel="manifest" href="manifest.webmanifest">
 <link rel="stylesheet" href="styles.css">
+<title>Wealth Planner — Personal Finance</title>
 </head>
-<body><main>
+<body><a class="skip-link" href="#sip">Skip to calculator</a><main>
 <header class="top"><div><div class="brand">Wealth Planner</div><div class="subtitle">Investment planning, made clear</div></div><div class="top-actions"><button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch colour theme" title="Switch colour theme">☼ <span id="themeLabel">Light</span></button><span class="pill">INDIA</span></div></header>
-<nav class="tabs" aria-label="App sections">
-<button class="tab active" data-tab="sip">SIP</button><button class="tab" data-tab="portfolio">Portfolio</button><button class="tab" data-tab="planner">Goals</button><button class="tab" data-tab="withdraw">SWP</button><button class="tab" data-tab="fire">FIRE</button><button class="tab" data-tab="retirement">Retire</button>
+<nav class="tabs" aria-label="App sections" role="tablist">
+<button class="tab active" data-tab="sip" type="button" role="tab" aria-controls="sip" aria-selected="true">SIP</button><button class="tab" data-tab="portfolio">Portfolio</button><button class="tab" data-tab="planner">Goals</button><button class="tab" data-tab="withdraw">SWP</button><button class="tab" data-tab="fire">FIRE</button><button class="tab" data-tab="retirement">Retire</button>
 </nav>
 
-<section id="sip" class="page active">
+<section id="sip" class="page active" role="tabpanel" aria-label="Sip">
 <div class="card">
 <h2>SIP calculator</h2><p class="hint">Adjust assumptions to see the estimated result instantly.</p>
 <div class="control"><div class="line"><span class="label">Monthly SIP</span><span class="value" id="sipOut">₹10,000</span></div><input id="sipAmount" type="range" min="0" max="200000" step="500" value="10000"><div class="ends"><span>₹0</span><span>₹2,00,000</span></div></div>
@@ -97,4 +101,7 @@
 <p class="note">The required corpus is the present value at retirement of monthly expenses rising with inflation until your planned end age, discounted at the post-retirement return. It assumes constant returns and excludes pension income, EPF, gratuity, healthcare shocks and taxes on each retirement withdrawal. Estimates are not guarantees.</p>
 </section>
 <footer class="note">Wealth Planner · Estimates only · Not investment or tax advice</footer>
-<script src="app.js" defer></script>/html>
+<script src="app.js" defer></script>
+</main>
+</body>
+</html>

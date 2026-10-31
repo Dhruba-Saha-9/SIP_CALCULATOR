@@ -157,3 +157,37 @@ html[data-theme="light"] .theme-toggle{background:#fff;color:#172338}
 html[data-theme="light"] .pill{color:#087f5b;border-color:#a8d7c4}
 html[data-theme="light"] .line .label{color:#64748b}
 
+
+
+/* Final polish: browser accessibility, branded header and responsive controls */
+.skip-link{
+  position:absolute;left:12px;top:-60px;z-index:100;
+  padding:10px 14px;border-radius:10px;background:var(--accent);
+  color:#082016;font-weight:750;text-decoration:none
+}
+.skip-link:focus{top:12px}
+.brand{display:flex;align-items:center;gap:10px}
+.brand::before{
+  content:"";display:inline-block;flex:0 0 34px;width:34px;height:34px;
+  border-radius:10px;background:url("icon.svg") center/cover no-repeat;
+  box-shadow:0 4px 14px rgba(0,0,0,.2)
+}
+button{font-family:inherit}
+button:disabled{opacity:.55;cursor:not-allowed}
+.tab{white-space:nowrap}
+.page[role="tabpanel"]:focus{outline:none}
+input[type="range"]{touch-action:pan-y}
+input[type="number"]{font-variant-numeric:tabular-nums}
+footer.note{text-align:center;padding:18px 8px 4px;border-top:1px solid var(--line)}
+@media(max-width:520px){
+  .top{align-items:flex-start}
+  .top-actions{gap:6px}
+  .brand{font-size:19px}
+  .brand::before{width:31px;height:31px;flex-basis:31px}
+  .tab{flex-basis:68px}
+}
+@media(hover:hover){
+  .tab:hover:not(.active){border-color:var(--blue);color:var(--text)}
+  .card{transition:border-color .18s ease,transform .18s ease}
+  .card:hover{border-color:color-mix(in srgb,var(--line) 55%,var(--blue))}
+}

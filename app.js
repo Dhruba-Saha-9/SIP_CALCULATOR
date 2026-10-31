@@ -1,5 +1,11 @@
+'use strict';
 const $=id=>document.getElementById(id), money=n=>'₹'+Math.round(Number.isFinite(n)?n:0).toLocaleString('en-IN');
-const num=id=>Math.max(0,Number($(id).value)||0);
+const num=id=>{
+ const el=$(id),value=Number(el.value);
+ if(!Number.isFinite(value))return 0;
+ const min=el.min===''?0:Number(el.min),max=el.max===''?Infinity:Number(el.max);
+ return Math.min(max,Math.max(min,value));
+};
 const pct=(r)=>Math.pow(1+r/100,1/12)-1;
 function sipProjection(sip,rate,years,step,expense=0,pause=0){
  const months=Math.max(0,Math.floor(years*12)), mr=pct(Math.max(-.99,rate-expense));
@@ -40,7 +46,16 @@ function updateSip(){
 $('resetSip').onclick=()=>{['sipAmount','sipRate','sipYears','sipStep','sipExpense','pauseMonths'].forEach(id=>$(id).value=0);updateSip();};
 
 // Tabs
-document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x===b));document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));window.scrollTo({top:0,behavior:'smooth'});}));
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>{
+    const active=x===b;
+    x.classList.toggle('active',active);
+    x.setAttribute('aria-selected',String(active));
+    x.tabIndex=active?0:-1;
+  });
+  document.querySelectorAll('.page').forEach(x=>x.classList.toggle('active',x.id===b.dataset.tab));
+  window.scrollTo({top:0,behavior:'smooth'});
+}));
 
 // Portfolio, saved locally
 let portfolio=[];try{portfolio=JSON.parse(localStorage.getItem('wealthPlannerPortfolio')||'[]')}catch(e){portfolio=[]}
