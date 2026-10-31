@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Personal finance planner for SIPs, investment goals, portfolio tracking, FIRE and retirement projections.">
+<title>Wealth Planner | Personal Finance</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body><main>
+<header class="top"><div><div class="brand">Wealth Planner</div><div class="subtitle">Investment planning, made clear</div></div><div class="top-actions"><button class="theme-toggle" id="themeToggle" type="button" aria-label="Switch colour theme" title="Switch colour theme">☼ <span id="themeLabel">Light</span></button><span class="pill">INDIA</span></div></header>
+<nav class="tabs" aria-label="App sections">
+<button class="tab active" data-tab="sip">SIP</button><button class="tab" data-tab="portfolio">Portfolio</button><button class="tab" data-tab="planner">Goals</button><button class="tab" data-tab="withdraw">SWP</button><button class="tab" data-tab="fire">FIRE</button><button class="tab" data-tab="retirement">Retire</button>
+</nav>
+
+<section id="sip" class="page active">
+<div class="card">
+<h2>SIP calculator</h2><p class="hint">Adjust assumptions to see the estimated result instantly.</p>
+<div class="control"><div class="line"><span class="label">Monthly SIP</span><span class="value" id="sipOut">₹10,000</span></div><input id="sipAmount" type="range" min="0" max="200000" step="500" value="10000"><div class="ends"><span>₹0</span><span>₹2,00,000</span></div></div>
+<div class="control"><div class="line"><span class="label">Expected annual return</span><span class="value" id="sipRateOut">12%</span></div><input id="sipRate" type="range" min="0" max="30" step=".5" value="12"><div class="ends"><span>0%</span><span>30%</span></div></div>
+<div class="control"><div class="line"><span class="label">Duration</span><span class="value" id="sipYearsOut">15 years</span></div><input id="sipYears" type="range" min="0" max="40" value="15"><div class="ends"><span>0</span><span>40 years</span></div></div>
+<div class="control"><div class="line"><span class="label">Annual step-up</span><span class="value" id="sipStepOut">10%</span></div><input id="sipStep" type="range" min="0" max="50" value="10"><div class="ends"><span>0%</span><span>50%</span></div></div>
+<div class="control"><div class="line"><span class="label">Annual expense ratio</span><span class="value" id="sipExpenseOut">0.00%</span></div><input id="sipExpense" type="range" min="0" max="3" step=".05" value="0"><div class="ends"><span>0%</span><span>3%</span></div></div>
+<div class="field"><label for="pauseMonths">Pause SIP for (months, from the start)</label><input id="pauseMonths" type="number" min="0" max="480" value="0"></div>
+
+</div>
+<div class="card result"><div class="eyebrow">ESTIMATED IN-HAND CORPUS</div><div class="big" id="sipNet">₹0</div><div class="grid"><div class="metric"><span>Total invested</span><strong id="sipInvested">₹0</strong></div><div class="metric"><span>Gross corpus</span><strong id="sipGross">₹0</strong></div><div class="metric"><span>Profit before tax</span><strong id="sipProfit">₹0</strong></div><div class="metric"><span>Total deductions</span><strong id="sipDeductions">₹0</strong></div></div></div>
+<div class="card"><h2>Growth chart</h2><div class="chart" id="sipChart"></div><div class="legend"><span><i class="dot" style="background:#70dfaa"></i>Corpus</span><span><i class="dot" style="background:#86b9ff"></i>Invested</span></div></div>
+<div class="card"><h2>Return comparison</h2><p class="hint">Same SIP and duration at different annual returns.</p><div class="tablewrap"><table><thead><tr><th>Return</th><th>Invested</th><th>Gross corpus</th><th>In-hand</th></tr></thead><tbody id="compareRows"></tbody></table></div></div>
+<div class="card"><h2>5-year projection</h2><div class="tablewrap"><table><thead><tr><th>Year</th><th>Monthly SIP</th><th>Invested</th><th>Gross corpus</th><th>In-hand</th></tr></thead><tbody id="sipYearRows"></tbody></table></div></div>
+<div class="card"><h2>Export projection</h2><button class="btn primary" id="exportCsv">Download SIP projection CSV</button><button class="btn" id="printReport">Print / Save report as PDF</button></div><button class="btn" id="resetSip">Reset SIP calculator to zero</button>
+<p class="note">All in-hand figures use a simplified LTCG-only assumption: 12.5% tax on eligible gains above ₹1.25 lakh, plus 4% cess, and estimated 0.001% redemption STT. For simplicity, all units are assumed to qualify for long-term equity mutual fund tax treatment; short-term redemptions are not modelled. Purchase stamp duty is included in SIP projections. Actual tax depends on financial-year gains, fund category, investor circumstances and current law.</p>
+</section>
+
+<section id="portfolio" class="page">
+<div class="card"><h2>My portfolio</h2><p class="hint">Add recurring investments. Your list is saved on this device.</p>
+<div class="fields"><div class="field"><label for="pName">Investment / fund name</label><input id="pName" type="text" placeholder="e.g. Index Fund"></div><div class="field"><label for="pAmount">Monthly SIP (₹)</label><input id="pAmount" type="number" min="1" placeholder="5000"></div><div class="field"><label for="pRate">Expected return (%)</label><input id="pRate" type="number" min="0" max="40" step=".1" value="12"></div><div class="field"><label for="pYears">Years</label><input id="pYears" type="number" min="1" max="50" value="15"></div></div>
+<button class="btn primary" id="addInvestment">Add investment</button></div>
+<div class="card result"><div class="eyebrow">COMBINED IN-HAND PORTFOLIO VALUE</div><div class="big" id="portfolioValue">₹0</div><div class="grid"><div class="metric"><span>Combined invested</span><strong id="portfolioInvested">₹0</strong></div><div class="metric"><span>Gross corpus</span><strong id="portfolioGross">₹0</strong></div><div class="metric"><span>Estimated profit</span><strong id="portfolioGain">₹0</strong></div><div class="metric"><span>Tax & charges</span><strong id="portfolioDeductions">₹0</strong></div></div></div>
+<div class="card"><h2>Your investments</h2><div id="portfolioList" class="empty">No investments added yet.</div><button class="btn danger" id="clearPortfolio">Delete all portfolio entries</button></div>
+<p class="note">Portfolio entries are projections, not live mutual fund holdings or broker-linked balances. Data stays in this browser/app on this device; clearing app data may erase it.</p>
+</section>
+
+<section id="planner" class="page">
+<div class="card"><h2>Goal planner</h2><p class="hint">Calculate the monthly SIP needed to reach a target corpus.</p>
+<div class="fields"><div class="field"><label for="goalTarget">Target amount (₹)</label><input id="goalTarget" type="number" min="1" value="10000000"></div><div class="field"><label for="goalYears">Time available (years)</label><input id="goalYears" type="number" min="1" max="50" value="20"></div><div class="field"><label for="goalRate">Expected annual return (%)</label><input id="goalRate" type="number" min="0" max="40" step=".5" value="12"></div><div class="field"><label for="goalStep">Annual step-up (%)</label><input id="goalStep" type="number" min="0" max="50" value="10"></div></div>
+<div class="eyebrow">REQUIRED STARTING MONTHLY SIP</div><div class="big" id="goalSip">₹0</div><div class="rows"><div class="row"><span>Total contributions</span><strong id="goalInvested">₹0</strong></div><div class="row"><span>Gross projected corpus</span><strong id="goalGross">₹0</strong></div><div class="row"><span>Estimated tax & charges</span><strong id="goalDeductions">₹0</strong></div><div class="row"><span>Target in-hand amount</span><strong id="goalDisplay">₹0</strong></div></div>
+</div>
+<div class="card"><h2>Lumpsum calculator</h2><div class="fields"><div class="field"><label for="lumpAmount">One-time investment (₹)</label><input id="lumpAmount" type="number" min="0" value="100000"></div><div class="field"><label for="lumpRate">Annual return (%)</label><input id="lumpRate" type="number" min="0" max="40" step=".5" value="12"></div><div class="field"><label for="lumpYears">Duration (years)</label><input id="lumpYears" type="number" min="0" max="50" value="10"></div></div><div class="eyebrow">ESTIMATED IN-HAND VALUE</div><div class="big" id="lumpValue">₹0</div><div class="rows"><div class="row"><span>Gross future value</span><strong id="lumpGross">₹0</strong></div><div class="row"><span>Estimated gain</span><strong id="lumpGain">₹0</strong></div><div class="row"><span>Estimated tax & STT</span><strong id="lumpDeductions">₹0</strong></div></div></div>
+</section>
+
+<section id="withdraw" class="page">
+<div class="card"><h2>SWP / withdrawal planner</h2><p class="hint">Estimate a monthly withdrawal from an existing corpus.</p>
+<div class="fields"><div class="field"><label for="swpCorpus">Starting corpus (₹)</label><input id="swpCorpus" type="number" min="0" value="5000000"></div><div class="field"><label for="swpMonthly">Monthly withdrawal (₹)</label><input id="swpMonthly" type="number" min="0" value="30000"></div><div class="field"><label for="swpRate">Expected annual return (%)</label><input id="swpRate" type="number" min="0" max="40" step=".5" value="8"></div><div class="field"><label for="swpYears">Withdrawal period (years)</label><input id="swpYears" type="number" min="1" max="60" value="25"></div></div>
+<div class="eyebrow">ESTIMATED REMAINING IN-HAND CORPUS</div><div class="big" id="swpRemaining">₹0</div><div class="rows"><div class="row"><span>Gross withdrawals</span><strong id="swpTotal">₹0</strong></div><div class="row"><span>Estimated tax & STT</span><strong id="swpDeductions">₹0</strong></div><div class="row"><span>Total received in-hand</span><strong id="swpInHand">₹0</strong></div><div class="row"><span>Months until corpus runs out</span><strong id="swpRunout">—</strong></div><div class="row"><span>Result</span><strong id="swpStatus">—</strong></div></div>
+</div>
+<p class="note">SWP assumes constant monthly returns and month-end withdrawals. It estimates realized gains proportionately on each withdrawal and estimates the in-hand value of the remaining corpus. Actual tax depends on financial-year timing and your other capital gains.</p>
+</section>
+
+
+<section id="fire" class="page">
+<div class="card">
+<h2>FIRE calculator</h2><p class="hint">Estimate when your investments could cover your living costs without employment income.</p>
+<div class="fields">
+<div class="field"><label for="fireAge">Current age</label><input id="fireAge" type="number" min="18" max="80" value="25"></div>
+<div class="field"><label for="fireExpenses">Monthly expenses today (₹)</label><input id="fireExpenses" type="number" min="0" value="50000"></div>
+<div class="field"><label for="fireCurrent">Current invested corpus (₹)</label><input id="fireCurrent" type="number" min="0" value="500000"></div>
+<div class="field"><label for="fireMonthly">Monthly investment (₹)</label><input id="fireMonthly" type="number" min="0" value="20000"></div>
+<div class="field"><label for="fireStep">Annual investment step-up (%)</label><input id="fireStep" type="number" min="0" max="50" value="10"></div>
+<div class="field"><label for="fireReturn">Expected annual return (%)</label><input id="fireReturn" type="number" min="0" max="30" step=".5" value="12"></div>
+<div class="field"><label for="fireInflation">Annual expense inflation (%)</label><input id="fireInflation" type="number" min="0" max="15" step=".5" value="6"></div>
+<div class="field"><label for="fireSWR">Safe withdrawal rate (%)</label><input id="fireSWR" type="number" min="1" max="10" step=".25" value="4"></div>
+</div></div>
+<div class="card result"><div class="eyebrow">ESTIMATED FINANCIAL INDEPENDENCE TARGET</div><div class="big" id="fireTarget">₹0</div>
+<div class="grid"><div class="metric"><span>Time to FIRE</span><strong id="fireTime">—</strong></div><div class="metric"><span>Estimated FIRE age</span><strong id="fireAgeResult">—</strong></div><div class="metric"><span>Monthly expenses at FIRE</span><strong id="fireFutureExpense">₹0</strong></div><div class="metric"><span>Projected in-hand corpus</span><strong id="fireCorpus">₹0</strong></div></div>
+<div class="rows" style="margin-top:13px"><div class="row"><span>Gross projected corpus</span><strong id="fireGross">₹0</strong></div><div class="row"><span>Estimated tax & charges</span><strong id="fireDeductions">₹0</strong></div><div class="row"><span>In-hand surplus / shortfall after 40 years</span><strong id="fireGap">₹0</strong></div></div></div>
+<p class="note">Uses your selected safe withdrawal rate as an estimate, not a guarantee. Expenses rise with inflation; investment returns are assumed constant. In-hand value uses the app's simplified long-term equity mutual fund tax assumption. Market volatility, healthcare costs and changing returns can materially change the result.</p>
+</section>
+
+<section id="retirement" class="page">
+<div class="card"><h2>Retirement planner</h2><p class="hint">Estimate the corpus required at retirement and the monthly investment needed to reach it.</p>
+<div class="fields">
+<div class="field"><label for="retAge">Current age</label><input id="retAge" type="number" min="18" max="80" value="25"></div>
+<div class="field"><label for="retAt">Retirement age</label><input id="retAt" type="number" min="19" max="90" value="60"></div>
+<div class="field"><label for="retLife">Plan until age</label><input id="retLife" type="number" min="40" max="110" value="85"></div>
+<div class="field"><label for="retExpense">Monthly expenses today (₹)</label><input id="retExpense" type="number" min="0" value="50000"></div>
+<div class="field"><label for="retInflation">Annual expense inflation (%)</label><input id="retInflation" type="number" min="0" max="15" step=".5" value="6"></div>
+<div class="field"><label for="retCurrent">Current invested corpus (₹)</label><input id="retCurrent" type="number" min="0" value="500000"></div>
+<div class="field"><label for="retMonthly">Monthly investment until retirement (₹)</label><input id="retMonthly" type="number" min="0" value="20000"></div>
+<div class="field"><label for="retStep">Annual investment step-up (%)</label><input id="retStep" type="number" min="0" max="50" value="10"></div>
+<div class="field"><label for="retPreReturn">Return before retirement (%)</label><input id="retPreReturn" type="number" min="0" max="30" step=".5" value="12"></div>
+<div class="field"><label for="retPostReturn">Return after retirement (%)</label><input id="retPostReturn" type="number" min="0" max="20" step=".5" value="7"></div>
+</div></div>
+<div class="card result"><div class="eyebrow">ESTIMATED RETIREMENT CORPUS REQUIRED</div><div class="big" id="retTarget">₹0</div>
+<div class="grid"><div class="metric"><span>Monthly expense at retirement</span><strong id="retFutureExpense">₹0</strong></div><div class="metric"><span>Projected in-hand corpus</span><strong id="retProjectedNet">₹0</strong></div><div class="metric"><span>Gross projected corpus</span><strong id="retProjectedGross">₹0</strong></div><div class="metric"><span>Estimated tax & charges</span><strong id="retDeductions">₹0</strong></div></div>
+<div class="rows" style="margin-top:13px"><div class="row"><span>Corpus surplus / shortfall</span><strong id="retGap">₹0</strong></div><div class="row"><span>Required starting monthly investment</span><strong id="retRequiredSip">₹0</strong></div><div class="row"><span>Retirement duration modelled</span><strong id="retDuration">—</strong></div></div></div>
+<p class="note">The required corpus is the present value at retirement of monthly expenses rising with inflation until your planned end age, discounted at the post-retirement return. It assumes constant returns and excludes pension income, EPF, gratuity, healthcare shocks and taxes on each retirement withdrawal. Estimates are not guarantees.</p>
+</section>
+<footer class="note">Wealth Planner · Estimates only · Not investment or tax advice</footer>
+<script src="app.js" defer></script>/html>
