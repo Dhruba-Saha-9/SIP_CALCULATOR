@@ -54,11 +54,27 @@
 </section>
 
 <section id="withdraw" class="page">
-<div class="card"><h2>SWP / withdrawal planner</h2><p class="hint">Estimate a monthly withdrawal from an existing corpus.</p>
-<div class="fields"><div class="field"><label for="swpCorpus">Starting corpus (₹)</label><input id="swpCorpus" type="number" min="0" value="5000000"></div><div class="field"><label for="swpMonthly">Monthly withdrawal (₹)</label><input id="swpMonthly" type="number" min="0" value="30000"></div><div class="field"><label for="swpRate">Expected annual return (%)</label><input id="swpRate" type="number" min="0" max="40" step=".5" value="8"></div><div class="field"><label for="swpYears">Withdrawal period (years)</label><input id="swpYears" type="number" min="1" max="60" value="25"></div></div>
-<div class="eyebrow">ESTIMATED REMAINING IN-HAND CORPUS</div><div class="big" id="swpRemaining">₹0</div><div class="rows"><div class="row"><span>Gross withdrawals</span><strong id="swpTotal">₹0</strong></div><div class="row"><span>Estimated tax & STT</span><strong id="swpDeductions">₹0</strong></div><div class="row"><span>Total received in-hand</span><strong id="swpInHand">₹0</strong></div><div class="row"><span>Months until corpus runs out</span><strong id="swpRunout">—</strong></div><div class="row"><span>Result</span><strong id="swpStatus">—</strong></div></div>
+<div class="card"><h2>SWP / withdrawal planner</h2><p class="hint">Lump-sum equity mutual fund model. Wait before starting withdrawals; increase the SWP annually with inflation.</p>
+<div class="fields">
+<div class="field"><label for="swpCorpus">Initial lump-sum investment (₹)</label><input id="swpCorpus" type="number" min="0" value="5000000"></div>
+<div class="field"><label for="swpMonthly">Starting monthly withdrawal (₹)</label><input id="swpMonthly" type="number" min="0" value="40000"></div>
+<div class="field"><label for="swpRate">Annual return after fund expenses (%)</label><input id="swpRate" type="number" min="0" max="40" step=".5" value="12"></div>
+<div class="field"><label for="swpInflation">Annual withdrawal increase / inflation (%)</label><input id="swpInflation" type="number" min="0" max="20" step=".5" value="6"></div>
+<div class="field"><label for="swpYears">Withdrawal period (years)</label><input id="swpYears" type="number" min="1" max="60" value="40"></div>
+<div class="field"><label for="swpWait">Wait before first withdrawal (months)</label><input id="swpWait" type="number" min="13" max="120" value="24"></div>
+<div class="field"><label for="swpStartDate">Investment date</label><input id="swpStartDate" type="date" value="2026-11-03"></div>
 </div>
-<p class="note">SWP assumes constant monthly returns and month-end withdrawals. It estimates realized gains proportionately on each withdrawal and estimates the in-hand value of the remaining corpus. Actual tax depends on financial-year timing and your other capital gains.</p>
+<div class="eyebrow">CORPUS WHEN SWP STARTS</div><div class="big" id="swpStartValue">₹0</div>
+<div class="grid">
+<div class="metric"><span>Total gross withdrawals</span><strong id="swpTotal">₹0</strong></div>
+<div class="metric"><span>Estimated LTCG tax + cess</span><strong id="swpDeductions">₹0</strong></div>
+<div class="metric"><span>Total estimated in-hand received</span><strong id="swpInHand">₹0</strong></div>
+<div class="metric"><span>Corpus remaining before final-sale tax</span><strong id="swpRemaining">₹0</strong></div>
+</div>
+<div class="rows" style="margin-top:13px"><div class="row"><span>Monthly in-hand average, first SWP year*</span><strong id="swpMonthlyNet">₹0</strong></div><div class="row"><span>First withdrawal date</span><strong id="swpFirstDate">—</strong></div><div class="row"><span>Corpus run-out</span><strong id="swpRunout">—</strong></div><div class="row"><span>Result</span><strong id="swpStatus">—</strong></div></div>
+</div>
+<div class="card"><h2>Withdrawal after inflation</h2><p class="hint">Your monthly gross redemption at 10-year intervals.</p><div class="tablewrap"><table><thead><tr><th>SWP year</th><th>Monthly gross withdrawal</th><th>Estimated corpus at year-end</th></tr></thead><tbody id="swpMilestones"></tbody></table></div></div>
+<p class="note">Assumptions: one lump-sum purchase; first withdrawal only after the selected waiting period (default 24 months); original units are assumed LTCG-eligible; constant returns converted to monthly compounding; month-end withdrawals; SWP rises once each 12 months. Estimated LTCG uses 12.5% plus 4% cess and ₹1.25 lakh exemption per Indian financial year (April–March). This is a simplified projection, not a tax return: other LTCG, surcharge, future law changes and scheme-specific exit loads are excluded. STT is omitted as immaterial to this long-range estimate. Returns should be entered after fund expenses.</p>
 </section>
 
 

@@ -89,18 +89,55 @@ function updateGoal(){
 function updateLump(){let a=num('lumpAmount'),r=num('lumpRate')/100,y=num('lumpYears'),v=a*Math.pow(1+r,y),gain=Math.max(0,v-a),tax=Math.max(0,gain-125000)*.125*1.04,stt=v*.00001,d=tax+stt;$('lumpValue').textContent=money(v-d);$('lumpGross').textContent=money(v);$('lumpGain').textContent=money(gain);$('lumpDeductions').textContent=money(d)}
 ['lumpAmount','lumpRate','lumpYears'].forEach(id=>$(id).addEventListener('input',updateLump));
 
-// SWP monthly simulation, month-end withdrawals
+// SWP: lump-sum investment, waiting period, inflation-linked withdrawals and FY-based LTCG estimate.
 function updateSwp(){
- let c=num('swpCorpus'),basis=c,w=num('swpMonthly'),r=pct(num('swpRate')),months=Math.min(720,num('swpYears')*12),total=0,stt=0,runout=null,annualGains={};
- for(let m=1;m<=months;m++){c*=1+r;if(w>0&&c>0){let withdrawal=Math.min(w,c),basisSold=Math.min(basis,basis*(withdrawal/c)),gain=Math.max(0,withdrawal-basisSold),fy=Math.ceil(m/12);annualGains[fy]=(annualGains[fy]||0)+gain;basis-=basisSold;c-=withdrawal;total+=withdrawal;stt+=withdrawal*.00001;if(c<=.005){c=0;basis=0;runout=m;break;}}}
- let tax=Object.values(annualGains).reduce((sum,g)=>sum+Math.max(0,g-125000)*.125*1.04,0),deductions=tax+stt;
- const remainingGain=Math.max(0,c-basis),lastBlock=Math.ceil(months/12),usedExemption=annualGains[lastBlock]||0;
- const remainingLtcgTax=Math.max(0,remainingGain-Math.max(0,125000-usedExemption))*.125*1.04;
- const remainingStt=c*.00001,remainingInHand=Math.max(0,c-remainingLtcgTax-remainingStt);
- $('swpRemaining').textContent=money(remainingInHand);$('swpTotal').textContent=money(total);$('swpDeductions').textContent=money(deductions);$('swpInHand').textContent=money(total-deductions);
- $('swpRunout').textContent=runout?`${runout} months (${(runout/12).toFixed(1)} years)`:'Not within selected period';$('swpStatus').textContent=runout?'Corpus depleted':'Corpus remains';
+ const initial=num('swpCorpus'),startingWithdrawal=num('swpMonthly'),annualReturn=num('swpRate'),inflation=num('swpInflation'),years=Math.min(60,num('swpYears')),wait=Math.max(13,Math.min(120,num('swpWait'))),startDateValue=$('swpStartDate').value;
+ const startDate=startDateValue?new Date(startDateValue+'T12:00:00'):new Date('2026-11-03T12:00:00');
+ const monthlyRate=pct(annualReturn),totalMonths=years*12;
+ let corpus=initial,basis=initial,totalWithdrawn=0,totalGain=0,runoutMonth=null,fyGains={},fyWithdrawals={},milestones={},firstDate=null,firstYearGross=0,firstYearTax=0,withdrawalMonths=0;
+ const addMonths=(date,n)=>{const d=new Date(date);const day=d.getDate();d.setDate(1);d.setMonth(d.getMonth()+n);const last=new Date(d.getFullYear(),d.getMonth()+1,0).getDate();d.setDate(Math.min(day,last));return d;};
+ const fyKey=d=>d.getMonth()>=3?`${d.getFullYear()}-${d.getFullYear()+1}`:`${d.getFullYear()-1}-${d.getFullYear()}`;
+ const fmtDate=d=>d.toLocaleDateString('en-IN',{day:'2-digit',month:'short',year:'numeric'});
+ for(let m=1;m<=wait;m++)corpus*=1+monthlyRate;
+ const startCorpus=corpus;
+ for(let m=1;m<=totalMonths;m++){
+   corpus*=1+monthlyRate;
+   if(corpus<=0){runoutMonth=m;break;}
+   const requested=startingWithdrawal*Math.pow(1+inflation/100,Math.floor((m-1)/12));
+   const withdrawal=Math.min(requested,corpus);
+   const basisSold=corpus>0?Math.min(basis,basis*(withdrawal/corpus)):0;
+   const gain=Math.max(0,withdrawal-basisSold);
+   const redemptionDate=addMonths(startDate,wait+m);
+   if(!firstDate)firstDate=redemptionDate;
+   const fy=fyKey(redemptionDate);
+   fyGains[fy]=(fyGains[fy]||0)+gain;
+   fyWithdrawals[fy]=(fyWithdrawals[fy]||0)+withdrawal;
+   if(m<=12)firstYearGross+=withdrawal;
+   totalGain+=gain;totalWithdrawn+=withdrawal;withdrawalMonths++;
+   corpus-=withdrawal;basis=Math.max(0,basis-basisSold);
+   if(m%120===0||m===totalMonths||corpus<=.005){milestones[Math.ceil(m/12)]={year:Math.ceil(m/12),monthly:requested,balance:Math.max(0,corpus)};}
+   if(corpus<=.005){corpus=0;basis=0;runoutMonth=m;break;}
+ }
+ // Apply the annual LTCG exemption once per actual Indian financial year.
+ const fyTaxes={};let totalTax=0;
+ Object.keys(fyGains).forEach(fy=>{const taxable=Math.max(0,fyGains[fy]-125000);const tax=taxable*.125*1.04;fyTaxes[fy]=tax;totalTax+=tax;});
+ const inHand=totalWithdrawn-totalTax;
+ const firstFY=firstDate?fyKey(firstDate):null;
+ const firstFYTax=firstFY?fyTaxes[firstFY]||0:0;
+ const firstYearNet=Math.max(0,firstYearGross-firstFYTax);
+ $('swpStartValue').textContent=money(startCorpus);
+ $('swpTotal').textContent=money(totalWithdrawn);
+ $('swpDeductions').textContent=money(totalTax);
+ $('swpInHand').textContent=money(inHand);
+ $('swpRemaining').textContent=money(corpus);
+ $('swpMonthlyNet').textContent=money(firstYearNet/Math.min(12,withdrawalMonths||1));
+ $('swpFirstDate').textContent=firstDate?fmtDate(firstDate):'—';
+ $('swpRunout').textContent=runoutMonth?`${Math.floor((runoutMonth-1)/12)} years, ${(runoutMonth-1)%12} months`: 'Not within selected period';
+ $('swpStatus').textContent=runoutMonth?'Corpus depleted':'Corpus remains';
+ const yearsToShow=[10,20,30,40,50,60].filter(y=>y<=years);
+ $('swpMilestones').innerHTML=yearsToShow.map(y=>{const row=milestones[y]||{monthly:startingWithdrawal*Math.pow(1+inflation/100,y-1),balance:corpus};return `<tr><td>${y}</td><td>${money(row.monthly)}</td><td>${money(row.balance)}</td></tr>`;}).join('');
 }
-['swpCorpus','swpMonthly','swpRate','swpYears'].forEach(id=>$(id).addEventListener('input',updateSwp));
+['swpCorpus','swpMonthly','swpRate','swpInflation','swpYears','swpWait','swpStartDate'].forEach(id=>$(id).addEventListener('input',updateSwp));
 
 // Export projection data to CSV
 $('exportCsv').onclick=()=>{let rows=[['Year','Monthly SIP','Cumulative invested','Gross corpus','Estimated in-hand'],...lastSipRows.map(r=>{let d=Math.max(0,r.value-r.invested-125000)*.125*1.04+r.value*.00001;return [r.year,Math.round(r.monthly),Math.round(r.invested),Math.round(r.value),Math.round(r.value-d)]})];let csv=rows.map(r=>r.join(',')).join('\n');let blob=new Blob([csv],{type:'text/csv'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='sip-in-hand-projection.csv';a.click();URL.revokeObjectURL(url)};
