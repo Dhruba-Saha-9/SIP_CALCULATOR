@@ -160,32 +160,45 @@ function accumulate(current,monthly,years,annualReturn,step){
 function updateFire(){
  const age=num('fireAge'),expenses=num('fireExpenses'),current=num('fireCurrent'),monthly=num('fireMonthly');
  const step=num('fireStep'),ret=num('fireReturn'),infl=num('fireInflation'),swr=Math.max(.1,num('fireSWR'));
- let gross=current,basis=current,found=null,foundData=null;const mr=pct(ret);
- for(let m=1;m<=480;m++){
-   const contribution=monthly*Math.pow(1+step/100,Math.floor((m-1)/12))*.99995;
-   gross=gross*(1+mr)+contribution;basis+=contribution;
-   const years=m/12,futureMonthly=expenses*Math.pow(1+infl/100,years);
-   const target=futureMonthly*12/(swr/100),net=estimateNet(gross,basis);
-   if(net>=target){found=years;foundData={gross,net,target,futureMonthly};break;}
+ let gross=current,basis=current,found=null,foundData=null;
+ const mr=pct(ret);
+ for(let m=1;m<=960;m++){
+   const contribution=monthly*Math.pow(1+step/100,Math.floor((m-1)/12));
+   gross=gross*(1+mr)+contribution;
+   basis+=contribution;
+   const years=m/12;
+   const futureMonthly=expenses*Math.pow(1+infl/100,years);
+   const target=futureMonthly*12/(swr/100);
+   const gain=Math.max(0,gross-basis);
+   const liquidationTax=Math.max(0,gain-125000)*.125*1.04;
+   const netCorpus=gross-liquidationTax;
+   if(netCorpus>=target){
+     found=years;
+     foundData={gross,basis,netCorpus,target,futureMonthly,liquidationTax};
+     break;
+   }
  }
- // Independently project the full 40-year endpoint for the gap metric.
- let endGross=current,endBasis=current;
- for(let m=1;m<=480;m++){
-   const contribution=monthly*Math.pow(1+step/100,Math.floor((m-1)/12))*.99995;
-   endGross=endGross*(1+mr)+contribution;
-   endBasis+=contribution;
- }
- const endNet=estimateNet(endGross,endBasis);
- const data=foundData||{gross:gross,net:estimateNet(gross,basis),target:expenses*Math.pow(1+infl/100,40)*12/(swr/100),futureMonthly:expenses*Math.pow(1+infl/100,40)};
- const endTarget=expenses*Math.pow(1+infl/100,40)*12/(swr/100);
- $('fireTarget').textContent=money(data.target);
- $('fireTime').textContent=found===null?'Beyond 40 years':`${found.toFixed(1)} years`;
+ const data=foundData;
+ $('fireTarget').textContent=data?money(data.target):'Not reached';
+ $('fireTime').textContent=found===null?'Beyond 80 years':`${found.toFixed(1)} years`;
  $('fireAgeResult').textContent=found===null?'Not reached':`${(age+found).toFixed(1)} years`;
- $('fireFutureExpense').textContent=money(data.futureMonthly);
- $('fireCorpus').textContent=money(data.net);
- $('fireGross').textContent=money(data.gross);
- $('fireDeductions').textContent=money(data.gross-data.net);
- $('fireGap').textContent=(endNet-endTarget>=0?'+':'−')+money(Math.abs(endNet-endTarget));
+ $('fireFutureExpense').textContent=data?money(data.futureMonthly):'—';
+ $('fireCorpus').textContent=data?money(data.netCorpus):'—';
+ $('fireGross').textContent=data?money(data.gross):'—';
+ $('fireDeductions').textContent=data?money(data.liquidationTax):'—';
+ if(data){
+   const gainRatio=data.gross>0?Math.max(0,1-data.basis/data.gross):0;
+   const annualGross=data.futureMonthly*12;
+   const annualGain=annualGross*gainRatio;
+   const annualTax=Math.max(0,annualGain-125000)*.125*1.04;
+   $('fireGrossWithdrawal').textContent=money(data.futureMonthly);
+   $('fireTaxMonthly').textContent=money(annualTax/12);
+   $('fireInHand').textContent=money((annualGross-annualTax)/12);
+ }else{
+   $('fireGrossWithdrawal').textContent='—';
+   $('fireTaxMonthly').textContent='—';
+   $('fireInHand').textContent='—';
+ }
 }
 ['fireAge','fireExpenses','fireCurrent','fireMonthly','fireStep','fireReturn','fireInflation','fireSWR'].forEach(id=>$(id).addEventListener('input',updateFire));
 
